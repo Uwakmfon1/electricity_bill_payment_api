@@ -23,14 +23,17 @@ class TransactionController extends Controller
 //        $query['created_at']=NOW();
 //        Transaction::create($query);
 
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id'=>1,
                 'provider_id'=>$query['provider_id'],
                 'meter_number'=>$query['meter_number'],
                 'amount'=>$query['amount'],
                 'created_at'=>NOW()
             ]);
-        return response()->json(['message'=>'successfully made a payment'],200);
+        return response()->json([
+            'message'=>'successfully made a payment',
+            'details'=>$transaction],
+            200);
         }
 //    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    public function payment(Request $request)
+    public function makePayment(Request $request)
     {
         $query = $request->validate([
            'provider_id'=>'required',
@@ -36,4 +36,22 @@ class TransactionController extends Controller
             200);
         }
 //    }
+
+    public function getPayments(Request $request)
+    {
+        try{
+            $transaction = Transaction::select(['user_id','provider_id','meter_number','amount'])
+                ->where('user_id',1) //comeback to insert authenticated user
+                ->paginate(10);
+            return response()->json([
+                'message'=>'success',
+                'transaction'=>$transaction
+            ],200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage()
+            ],400);
+        }
+
+    }
 }

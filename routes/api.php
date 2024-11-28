@@ -17,4 +17,5 @@ Route::get('/home', function (){
 Route::post('/register',[AuthController::class, 'registerUser']);
 Route::post('/login',[AuthController::class,'login']);
 Route::get('/providers',[ProviderController::class,'getProviders']);
+
 Route::post('/payments',[TransactionController::class,'payment']);

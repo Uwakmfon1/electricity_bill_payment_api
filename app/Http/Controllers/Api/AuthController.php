@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         try {
             $user = User::create($result);
-//            $accessToken = $user->createToken('authToken')->accessToken;
+//            $accessToken = $user->createToken('authToken')->accessToken
             return response()->json(['message'=>'successfully saved to database'], 201);
         } catch (\Exception $e) {
             return response()->json(['message'=>'could not save user to database'],400);

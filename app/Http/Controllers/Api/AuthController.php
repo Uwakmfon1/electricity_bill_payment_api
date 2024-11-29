@@ -18,23 +18,7 @@ class AuthController extends Controller
 {
     public function registerUser(RegisterUserRequest $request): JsonResponse
     {
-//        $validator = Validator::make($request->all(), [
-//            'name' => 'required|string|max:255',
-//            'email' => 'required|email|unique:users,email',
-//            'password' => 'required|min:8',
-//        ]);
-//
-//        if ($validator->fails()) {
-//            // If validation fails, you can access the error messages like this
-//            return response()->json([
-//                'message' => 'Validation failed',
-//                'errors' => $validator->errors(),  // This will return the validation errors
-//            ], 422);
-//        }
-//        die();
        $result = $request->validated();
-////        $errors = [];
-//        if(!$result) dd($result->errors());
 
         $result['email_verified_at'] = now();
         $result['created_at'] = now();

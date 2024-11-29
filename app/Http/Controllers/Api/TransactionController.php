@@ -17,14 +17,8 @@ class TransactionController extends Controller
            'amount'=>'required|regex:/^\d+(\.\d{1,2})?$/'
         ]);
 
-        //ensure only auth user can make payments
-//        if(Auth::user()){
-//        $query['user_id'] = 1;
-//        $query['created_at']=NOW();
-//        Transaction::create($query);
-
             $transaction = Transaction::create([
-                'user_id'=>1,
+                'user_id'=>Auth::id(),
                 'provider_id'=>$query['provider_id'],
                 'meter_number'=>$query['meter_number'],
                 'amount'=>$query['amount'],
@@ -35,13 +29,13 @@ class TransactionController extends Controller
             'details'=>$transaction],
             200);
         }
-//    }
+
 
     public function getPayments(Request $request)
     {
         try{
             $transaction = Transaction::select(['user_id','provider_id','meter_number','amount'])
-                ->where('user_id',1) //comeback to insert authenticated user
+                ->where('user_id',Auth::id())
                 ->paginate(10);
             return response()->json([
                 'message'=>'success',

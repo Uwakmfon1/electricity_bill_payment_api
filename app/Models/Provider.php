@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class Provider extends Model
 {
 
-
+    public $timestamps = false;
     protected static function boot()
     {
         parent::boot();

@@ -27,12 +27,12 @@ class RegisterUserRequest extends FormRequest
             'password'=>'required|min:8'
         ];
     }
-//    public function messages()
-//    {
-//        return[
-//            'name.required'=>'name is required',
-//            'email.required'=>'email address is required',
-//            'password.required'=>'password is required'
-//        ];
-//    }
+    public function messages()
+    {
+        return[
+            'name.required'=>'name is required',
+            'email.required'=>'email address is required',
+            'password.required'=>'password is required'
+        ];
+    }
 }

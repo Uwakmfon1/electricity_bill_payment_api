@@ -6,22 +6,41 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginUserRequest;
 use App\Http\Requests\Api\RegisterUserRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function registerUser(RegisterUserRequest $request)
+    public function registerUser(RegisterUserRequest $request): JsonResponse
     {
-//       dd($request);
+//        $validator = Validator::make($request->all(), [
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|email|unique:users,email',
+//            'password' => 'required|min:8',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            // If validation fails, you can access the error messages like this
+//            return response()->json([
+//                'message' => 'Validation failed',
+//                'errors' => $validator->errors(),  // This will return the validation errors
+//            ], 422);
+//        }
+//        die();
        $result = $request->validated();
+////        $errors = [];
+//        if(!$result) dd($result->errors());
 
         $result['email_verified_at'] = now();
         $result['created_at'] = now();
         $result['updated_at'] = now();
         $result['password'] = Hash::make($result['password']);
+        $result['remember_token'] = Str::random(10);
 
         try{
             $user = User::create($result);
@@ -37,9 +56,8 @@ class AuthController extends Controller
         }catch(\Exception $e){
             return response()->json([
                 'message' => 'User registration failed',
-                'error'=>$e->getMessage(),
-                'error_point'=>$e->errors()
-            ], 409);
+                'error'=>$e->errors()
+            ], 500);
 
         }
     }
@@ -56,7 +74,7 @@ class AuthController extends Controller
             if(!$user) $errors['email'] = "Please supply a valid email address";
 
             if($user && !Hash::check($validated_user['password'], $user->password)) $errors['password']= "Incorrect Password";
-            
+
             Log::error('Invalid credentials attempt', [
                 'email' => $validated_user['email'],
             ]);

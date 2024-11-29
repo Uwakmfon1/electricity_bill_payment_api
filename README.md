@@ -1,66 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+#  Electricity Bill Payment System Api
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This API provides a system for managing electricity bill payments by users and service providers. It includes registering and authenticating users, managing electricity providers and simulating electric bill payments.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Setup Instructions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Requirements
+- PHP 8.2+
+- composer 2.5
+- Laravel ^11.3+
+- MySQL 5.7+/MariaDB
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Installation
+1. Clone the repository:
+  On your terminal, in you preferred directory, copy and paste the code below:
+  ```bash
+     git clone https://github.com/Uwakmfon1/electricity_bill_payment_api.git
+  ```
+2. Navigate into the Project directory:
+  ```bash 
+    cd electricity_bill_payment_api
+  ```
+3. Install PHP dependencies:
+  ```bash
+    composer install
+  ```
+4. Install Node.js dependencies
+  ```bash
+    npm install && npm run dev
+  ```
+5. Copy the .env.example file to .env and configure your environment variables, including your database settings and any other necessary configuration.
+  ```bash
+    cp .env.example .env
+  ```
+6. Generate an application key
+  ```bash
+    php artisan key:generate
+  ```
+7. Migrate and seed the database
+```bash
+   php artisan migrate --seed
+```
+8. Start the development server
+```bash
+  php artisan serve
+```
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## API Documentation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Overview
+  Below are the main API endpoints with examples for requests and responses
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Endpoints
 
-## Laravel Sponsors
+| Method | Endpoint        |   Description               |
+|--------|-----------------|-----------------------------|
+| POST   | /api/register   | Register a new user         |
+| POST   | /api/login      | Authenticate a user         |
+| POST   | /api/payments   | Make Payments to providers  |
+| GET    | /api/payments   | Get transaction records     |
+| GET    | /api/providers  | Get records of providers    |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Example: User Registration
+#### Request:
+  ```bash
+    {
+      "name":"John Doe",
+      "email": "johndoe@example.com",
+      "password": "password123"
+    }
+  ```
+#### Response to the above request:
+  ```bash
+    {
+      "message":"User registration successful",
+      "access_token":"1|QzLOpjsgNkWBcmFfTO7RphRqeGsK3BsDxHT8aqIF306bf8ce"
+    }
+  ```
+### Example: User Login
+#### Request:
+  ```bash
+    {    
+      "email": "johndoe@example.com",
+      "password": "password123"
+    }
+  ```
+#### Response to the above request:
+  ```bash
+    {
+      "message":"User logged in Successfully",
+      "access_token":"2|xZcxslZV3uR3Y7rSg6aRUeDVwQCuTAUVD17Q7DpM3ee6646c"
+    }
+  ```
+### Example: Fetching Providers
+#### Request: GET http://localhost:8000/api/providers
+  
+#### Response to the above request:
+  ```bash
+   {
+    "message": "Success",
+    "providers": [
+        {
+            "id": "066f7f2c-7ed4-4605-8b85-32ce8114d567",
+            "name": "EKEDC",
+            "logo_url": "https://ekedp.com/front/assets/images/resources/logo-1.png",
+            "description": "Eko Electricity Distribution Company"
+        },
+        {
+            "id": "1a330b01-6a85-4397-af92-e6a841fe8acd",
+            "name": "KEDCO",
+            "logo_url": "https://kedco.ng/public/wp-content/uploads/2024/04/kedco_logokk.png",
+            "description": "Kano Electricity Distribution Company Plc"
+        },
+        {
+            "id": "6d650137-e5d6-4d0b-a2da-9b188235f285",
+            "name": "PHED",
+            "logo_url": "https://phed.com.ng/assets/image001.png",
+            "description": "Port Harcourt Electricity Distribution Company"
+        }
+    ]
+  }
+  ```
 
-### Premium Partners
+## Test Account
+Use the following test credentials to explore the API:
+  * #### Email: test@example.com
+  * #### Password: password
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Notes
+  * For security, sensitive information such as meter numbers is masked in API responses.
+  * Ensure the database is correctly configured before running migrations.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Thank you for reading. 🌱 

@@ -3,55 +3,76 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\LoginUserRequest;
+use App\Http\Requests\Api\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function registerUser(Request $request)
+    public function registerUser(RegisterUserRequest $request)
     {
-       $result = $request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|email|unique:users,email',
-            'password'=>'required|min:8'
-        ]);
+//       dd($request);
+       $result = $request->validated();
+
         $result['email_verified_at'] = now();
         $result['created_at'] = now();
         $result['updated_at'] = now();
         $result['password'] = Hash::make($result['password']);
 
-       $user = User::create($result);
-        if (!$user) {
-            return response()->json([
-                'message' => 'could not save user to database'
-            ], 400);
-        }
-        $access_token = $user->createToken($user->name . 'authToken')->plainTextToken;
-        return response()->json([
-            'message' => 'successfully saved to database',
-            'access_token' => $access_token
-        ], 201);
+        try{
+            $user = User::create($result);
+            $access_token = $user->createToken($user->name . 'authToken')->plainTextToken;
 
+            return response()->json([
+                'message' => 'User registration successful',
+                'access_token' => $access_token,
+
+                'user agent'=>$request->header('User-Agent')
+            ], 201);
+
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'User registration failed',
+                'error'=>$e->getMessage(),
+                'error_point'=>$e->errors()
+            ], 409);
+
+        }
     }
 
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
-        $validated_user = $request->validate([
-            'email'=>'required|string|email',
-            'password'=>'required|min:8'
-        ]);
+        $validated_user = $request->validated();
 
-        $user = User::where('email',$validated_user['email'])->first();
-        if(!$user || !Hash::check($validated_user['password'],$user->password)) {
-            return response()->json([
-                'message' => 'Invalid Credentials'
+        $user = User::where('email', $validated_user['email'])->first();
+
+
+        if (!$user || !Hash::check($validated_user['password'], $user->password)) {
+            $errors = [];
+            if(!$user) $errors['email'] = "Please supply a valid email address";
+
+            if($user && !Hash::check($validated_user['password'], $user->password)) $errors['password']= "Incorrect Password";
+            
+            Log::error('Invalid credentials attempt', [
+                'email' => $validated_user['email'],
             ]);
-        }
-        $access_token = $user->createToken($user->name.'AuthToken')->plainTextToken;
+
             return response()->json([
-                'access_token' => $access_token,
-            ]);
+                'message' => 'Invalid Credentials',
+                'error'=>$errors,
+            ],422);
         }
+
+            $access_token = $user->createToken($user->name . 'authToken')->plainTextToken;
+                return response()->json([
+                    'message' => 'User logged in Successfully',
+                    'access_token' => $access_token,
+                ],201);
+        }
+
 
 }

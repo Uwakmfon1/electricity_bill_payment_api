@@ -10,15 +10,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/home', function (){
-    return "Welcome to the Electricity Api";
-});
 
 Route::post('/register',[AuthController::class, 'registerUser']);
-Route::post('/login',[AuthController::class,'login']);
-Route::get('/providers',[ProviderController::class,'getProviders']);
 
-Route::post('/payments',[TransactionController::class,'makePayment']);
-Route::get('/payments',[TransactionController::class,'getPayments']);
+Route::middleware('auth:sanctum')->group( function() {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/providers', [ProviderController::class, 'getProviders']);
+    Route::post('/payments', [TransactionController::class, 'makePayment']);
+    Route::get('/payments', [TransactionController::class, 'getPayments']);
+});
 
 

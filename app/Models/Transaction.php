@@ -14,6 +14,7 @@ class Transaction extends Model
        'user_id',
       'provider_id',
         'meter_number',
+        'amount',
         'created_at'
     ];
     protected static function boot()

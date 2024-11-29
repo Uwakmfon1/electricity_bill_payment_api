@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->uuid('provider_id');
             $table->string('meter_number',10);
+            $table->decimal('amount', 10,2);
             $table->timestamp('created_at');
 
             $table->foreign('provider_id')->references('id')->on('providers')->onUpdate('cascade')->onDelete('cascade');

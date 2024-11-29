@@ -21,17 +21,37 @@ class AuthController extends Controller
         $result['updated_at'] = now();
         $result['password'] = Hash::make($result['password']);
 
-        try {
-            $user = User::create($result);
-//            $accessToken = $user->createToken('authToken')->accessToken
-            return response()->json(['message'=>'successfully saved to database'], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message'=>'could not save user to database'],400);
+       $user = User::create($result);
+        if (!$user) {
+            return response()->json([
+                'message' => 'could not save user to database'
+            ], 400);
         }
+        $access_token = $user->createToken($user->name . 'authToken')->plainTextToken;
+        return response()->json([
+            'message' => 'successfully saved to database',
+            'access_token' => $access_token
+        ], 201);
+
     }
 
     public function login(Request $request)
     {
+        $validated_user = $request->validate([
+            'email'=>'required|string|email',
+            'password'=>'required|min:8'
+        ]);
 
-    }
+        $user = User::where('email',$validated_user['email'])->first();
+        if(!$user || !Hash::check($validated_user['password'],$user->password)) {
+            return response()->json([
+                'message' => 'Invalid Credentials'
+            ]);
+        }
+        $access_token = $user->createToken($user->name.'AuthToken')->plainTextToken;
+            return response()->json([
+                'access_token' => $access_token,
+            ]);
+        }
+
 }

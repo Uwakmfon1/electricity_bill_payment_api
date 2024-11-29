@@ -26,23 +26,19 @@ This API provides a system for managing electricity bill payments by users and s
   ```bash
     composer install
   ```
-4. Install Node.js dependencies
-  ```bash
-    npm install && npm run dev
-  ```
-5. Copy the .env.example file to .env and configure your environment variables, including your database settings and any other necessary configuration.
+4. Copy the .env.example file to .env and configure your environment variables, including your database settings and any other necessary configuration.
   ```bash
     cp .env.example .env
   ```
-6. Generate an application key
+5. Generate an application key
   ```bash
     php artisan key:generate
   ```
-7. Migrate and seed the database
+6. Migrate and seed the database
 ```bash
    php artisan migrate --seed
 ```
-8. Start the development server
+7. Start the development server
 ```bash
   php artisan serve
 ```
